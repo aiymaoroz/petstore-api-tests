@@ -1,0 +1,4 @@
+20:22:58.046 [main] INFO  test.UserTests - **************** Updating user ****************
+20:22:58.619 [main] INFO  test.UserTests - **************** User is updated ****************
+20:22:59.180 [main] INFO  test.UserTests - **************** Deleting user ****************
+20:22:59.746 [main] INFO  test.UserTests - **************** User is deleted ****************
