@@ -1,92 +1,99 @@
 package test;
 
-import com.github.javafaker.Faker;
 import endpoints.UserEndPoints;
 import io.restassured.response.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import payload.User;
+import utilities.DataProviders;
+import com.github.javafaker.Faker;
+import utilities.Helper;
 
 import static org.testng.Assert.assertEquals;
 
 public class UserTests {
 
-    Faker faker;
-    User userPayload;
-    public Logger logger;
+    public Logger logger = LogManager.getLogger(this.getClass());
+    Faker faker = new Faker();
+    Helper helper = new Helper();
 
-    @BeforeClass
-    public void setup() {
-        faker = new Faker();
+    @Test(priority = 1, dataProvider = "Data", dataProviderClass = DataProviders.class)
+    public void testPostUser(String id, String username, String firstName, String lastName,
+                             String email, String password, String phone) {
+        User userPayload = new User();
+        userPayload.setId(Integer.parseInt(id));
+        userPayload.setUsername(username);
+        userPayload.setFirstName(firstName);
+        userPayload.setLastName(lastName);
+        userPayload.setEmail(email);
+        userPayload.setPassword(password);
+        userPayload.setPhone(phone);
 
-        userPayload = new User();
-
-        userPayload.setId(faker.idNumber().hashCode());
-        userPayload.setUsername(faker.name().username());
-        userPayload.setFirstName(faker.name().firstName());
-        userPayload.setLastName(faker.name().lastName());
-        userPayload.setEmail(faker.internet().safeEmailAddress());
-        userPayload.setPassword(faker.internet().password(5, 10));
-        userPayload.setPhone(faker.phoneNumber().cellPhone());
-
-        //logs
-        logger= LogManager.getLogger(this.getClass());
-    }
-
-    @Test(priority = 1)
-    public void testPostUser() {
-        logger.info("**************** Creating user ****************");
+        logger.info("******** Creating user: " + username + " ********");
         Response response = UserEndPoints.createUser(userPayload);
         response.then().log().all();
         assertEquals(response.getStatusCode(), 200);
-        logger.info("**************** User is created ****************");
+        logger.info("******** User created: " + username + " ********");
     }
 
-    @Test(priority = 2)
-    public void testGetUserByName() throws InterruptedException {
-        Response response = null;
-        int retries = 5;
-        int waitTimeMs = 1000; // 1 second between retries
-
-        logger.info("**************** Reading User info ****************");
-        for (int i = 0; i < retries; i++) {
-            response = UserEndPoints.readUser(this.userPayload.getUsername());
-            if (response.getStatusCode() == 200) {
-                break; // success!
-            }
-            Thread.sleep(waitTimeMs);
-        }
-        response.then().log().all();
-        assertEquals(response.getStatusCode(), 200, "User was not found after retries");
-        logger.info("**************** User info is read ****************");
-    }
-
-    @Test(priority = 3)
-    public void testUpdateUser() {
-        logger.info("**************** Updating user ****************");
-        userPayload.setFirstName(faker.name().firstName());
-        userPayload.setLastName(faker.name().lastName());
-        userPayload.setEmail(faker.internet().safeEmailAddress());
-
-        Response response = UserEndPoints.updateUser(this.userPayload.getUsername(), userPayload);
-        response.then().log().body();
-        assertEquals(response.getStatusCode(), 200);
-        logger.info("**************** User is updated ****************");
-
-        //checking data after update
-        Response getResponse = UserEndPoints.readUser(this.userPayload.getUsername());
-        getResponse.then().log().body();
-        assertEquals(getResponse.getStatusCode(), 200);
-    }
-
-    @Test(priority = 4)
-    public void testDeleteUserByName() {
-        logger.info("**************** Deleting user ****************");
-        Response response = UserEndPoints.deleteUser(this.userPayload.getUsername());
+    @Test(priority = 2, dataProvider = "Data", dataProviderClass = DataProviders.class)
+    public void testGetUserByName(String id, String username, String firstName, String lastName,
+                                  String email, String password, String phone) throws InterruptedException {
+        logger.info("******** Reading user: " + username + " ********");
+        Response response = helper.retryReadingUser(username);
         response.then().log().all();
         assertEquals(response.getStatusCode(), 200);
-        logger.info("**************** User is deleted ****************");
+
+        User actualUser = response.as(User.class);
+        assertEquals(actualUser.getUsername(), username);
+        assertEquals(actualUser.getFirstName(), firstName);
+        assertEquals(actualUser.getLastName(), lastName);
+        assertEquals(actualUser.getEmail(), email);
+        assertEquals(actualUser.getPassword(), password);
+        assertEquals(actualUser.getPhone(), phone);
+        logger.info("******** Finished reading user: " + username + " ********");
+    }
+
+    @Test(priority = 3, dataProvider = "Data", dataProviderClass = DataProviders.class)
+    public void testUpdateUser(String id, String username, String firstName, String lastName,
+                               String email, String password, String phone) throws InterruptedException {
+        User updatedPayload = new User();
+        updatedPayload.setId(Integer.parseInt(id));
+        updatedPayload.setUsername(username);
+        updatedPayload.setFirstName(faker.name().firstName());
+        updatedPayload.setLastName(faker.name().lastName());
+        updatedPayload.setEmail(faker.internet().safeEmailAddress());
+        updatedPayload.setPassword(password);
+        updatedPayload.setPhone(phone);
+
+        logger.info("******** Updating user: " + username + " ********");
+        Response updateResponse = helper.retryUpdatingUser(username, updatedPayload);
+        updateResponse.then().log().body();
+        assertEquals(updateResponse.getStatusCode(), 200);
+
+        // unstable petstore API may not return the updated user immediately
+        Thread.sleep(6000);
+
+        Response response = helper.retryReadingUser(username);
+        User actualUser = response.as(User.class);
+
+        assertEquals(response.getStatusCode(), 200);
+        assertEquals(actualUser.getUsername(), username);
+        assertEquals(actualUser.getFirstName(), updatedPayload.getFirstName());
+        assertEquals(actualUser.getLastName(), updatedPayload.getLastName());
+        assertEquals(actualUser.getEmail(), updatedPayload.getEmail());
+        assertEquals(actualUser.getPassword(), password);
+        assertEquals(actualUser.getPhone(), phone);
+        logger.info("******** User updated: " + username + " ********");
+    }
+
+    @Test(priority = 4, dataProvider = "Usernames", dataProviderClass = DataProviders.class)
+    public void testDeleteUser(String username) throws InterruptedException {
+        logger.info("******** Deleting user: " + username + " ********");
+        Response response = helper.retryDeletingUser(username);
+        response.then().log().all();
+        assertEquals(response.getStatusCode(), 200);
+        logger.info("******** User deleted: " + username + " ********");
     }
 }

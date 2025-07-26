@@ -1,4 +1,34 @@
-20:22:58.046 [main] INFO  test.UserTests - **************** Updating user ****************
-20:22:58.619 [main] INFO  test.UserTests - **************** User is updated ****************
-20:22:59.180 [main] INFO  test.UserTests - **************** Deleting user ****************
-20:22:59.746 [main] INFO  test.UserTests - **************** User is deleted ****************
+19:51:46.056 [main] INFO  test.UserTests - ******** Finished reading user: testUser4520013 ********
+19:51:46.542 [main] INFO  test.UserTests - ******** Updating user: testUser4520011 ********
+19:51:53.708 [main] INFO  test.UserTests - ******** User updated: testUser4520011 ********
+19:51:53.717 [main] INFO  test.UserTests - ******** Updating user: testUser4520012 ********
+19:52:00.872 [main] INFO  test.UserTests - ******** Updating user: testUser4520013 ********
+19:52:08.085 [main] INFO  test.UserTests - ******** Deleting user: testUser4520011 ********
+19:52:08.637 [main] INFO  test.UserTests - ******** User deleted: testUser4520011 ********
+19:52:08.645 [main] INFO  test.UserTests - ******** Deleting user: testUser4520012 ********
+19:52:09.222 [main] INFO  test.UserTests - ******** User deleted: testUser4520012 ********
+19:52:09.222 [main] INFO  test.UserTests - ******** Deleting user: testUser4520013 ********
+19:52:09.793 [main] INFO  test.UserTests - ******** User deleted: testUser4520013 ********
+19:52:10.135 [main] INFO  test.PetTests - ******** Creating pet: Max ********
+19:52:10.718 [main] INFO  test.PetTests - ******** Pet created: Max ********
+19:52:10.718 [main] INFO  test.PetTests - ******** Creating pet: Whiskers ********
+19:52:11.283 [main] INFO  test.PetTests - ******** Pet created: Whiskers ********
+19:52:11.283 [main] INFO  test.PetTests - ******** Creating pet: Tweety ********
+19:52:11.858 [main] INFO  test.PetTests - ******** Pet created: Tweety ********
+19:52:12.129 [main] INFO  test.PetTests - ******** Reading pet ID: 10092 ********
+19:52:12.700 [main] INFO  test.PetTests - ******** Reading pet ID: 10093 ********
+19:52:13.264 [main] INFO  test.PetTests - ******** Finished reading pet: Whiskers ********
+19:52:13.264 [main] INFO  test.PetTests - ******** Reading pet ID: 10094 ********
+19:52:13.823 [main] INFO  test.PetTests - ******** Finished reading pet: Tweety ********
+19:52:14.066 [main] INFO  test.PetTests - ******** Updating pet ID: 10092 ********
+19:52:20.218 [main] INFO  test.PetTests - ******** Pet updated: 10092 ********
+19:52:20.218 [main] INFO  test.PetTests - ******** Updating pet ID: 10093 ********
+19:52:28.424 [main] INFO  test.PetTests - ******** Pet updated: 10093 ********
+19:52:28.424 [main] INFO  test.PetTests - ******** Updating pet ID: 10094 ********
+19:52:34.616 [main] INFO  test.PetTests - ******** Pet updated: 10094 ********
+19:52:34.866 [main] INFO  test.PetTests - ******** Deleting pet ID: 10092 ********
+19:52:35.466 [main] INFO  test.PetTests - ******** Pet deleted: 10092 ********
+19:52:35.474 [main] INFO  test.PetTests - ******** Deleting pet ID: 10093 ********
+19:52:36.032 [main] INFO  test.PetTests - ******** Pet deleted: 10093 ********
+19:52:36.032 [main] INFO  test.PetTests - ******** Deleting pet ID: 10094 ********
+19:52:36.659 [main] INFO  test.PetTests - ******** Pet deleted: 10094 ********

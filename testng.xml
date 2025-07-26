@@ -9,7 +9,7 @@
     <test thread-count="5" name="PetTests">
         <classes>
             <class name="test.UserTests"/>
-            <!-- <class name="test.DDTests"/> -->
+            <class name="test.PetTests"/>
         </classes>
     </test>
 </suite>
